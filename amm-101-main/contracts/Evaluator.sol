@@ -127,8 +127,7 @@ contract Evaluator
 	public
 	{
 		// Retrieving address of pair from library
-		(address token0, address token1) = address(studentErc20[msg.sender]) < WETH ? (addr
-		ess(studentErc20[msg.sender]), WETH) : (WETH, address(studentErc20[msg.sender]));
+		(address token0, address token1) = address(studentErc20[msg.sender]) < WETH ? (address(studentErc20[msg.sender]), WETH) : (WETH, address(studentErc20[msg.sender]));
 		address studentTokenAndWethPair = uniswapV2Factory.getPair(token0, token1);
 
 		require(studentTokenAndWethPair != address(0),"la zone");

@@ -1,26 +1,29 @@
 const Str = require('@supercharge/strings')
-const BigNumber = require('bignumber.js');
+//const BigNumber = require('bignumber.js');
 
 var TDErc20 = artifacts.require("ERC20TD.sol");
 var ERC20 = artifacts.require("DummyToken.sol"); 
 var evaluator = artifacts.require("Evaluator.sol");
 var token = artifacts.require("myERC20.sol");
 var swap = artifacts.require("Swap.sol");
+var uniswapV2Router02 = artifacts.require("IUniswapV2Router02.sol");
 
 
 module.exports = (deployer, network, accounts) => {
     deployer.then(async () => {
         //await deployTDToken(deployer, network, accounts); 
-        await deployEvaluator(deployer, network, accounts); 
+        //await deployEvaluator(deployer, network, accounts); 
+		console.log("let's goooo")
+		await deployMyToken(deployer,network,accounts);
 		await deploySwap(deployer, network, accounts)
-        //await setPermissionsAndRandomValues(deployer, network, accounts); 
-        //await deployRecap(deployer, network, accounts); 
-		//await deployMyToken(deployer,network,accounts);
 		await exercices(deployer,network,accounts)
     });
 };
 async function deployMyToken(deployer,network,accounts){
-	myToken = await token.new("Martinooo Token","SJNb9",web3.utils.toBN("515455145000000000000000000"))
+	myToken = await token.at("0x9E9BA9C234F6B4f8B1852E0dFF1Dc71abA37d741")
+	//myToken = await token.new("AAATOKEN","AAA",web3.utils.toBN("515455145000000000000000000"))
+	console.log(myToken.address)
+
 }
 async function deployTDToken(deployer, network, accounts) {
 	TDToken = await TDErc20.new("TD-AMM-101","TD-AMM-101",web3.utils.toBN("20000000000000000000000000000"))
@@ -57,16 +60,23 @@ async function deployRecap(deployer, network, accounts) {
 	console.log("dummyToken " + dummyToken.address)
 	console.log("Evaluator " + Evaluator.address)
 }
-
 async function deploySwap(deployer, network, accounts){
-	mySwap=await swap.new()
+	//mySwap=await swap.new("0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D")
+	mySwap=await swap.at("0xd6fcbF83ea0594aeA5850Ba078c6FFd9Ac524eb7")
+	console.log(mySwap.address)
 }
 
 async function exercices(deployer, network, accounts){
 	//await Evaluator.submitErc20(myToken.address)
 	//await Evaluator.ex6b_testErc20TickerAndSupply()
-	await Evaluator.submitExercice(mySwap)
-	await Evaluator.ex8_contractCanSwapVsEth()
+	//await Evaluator.submitExercice(mySwap.address)
+	//await myToken.approveSwap(mySwap.address,"0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D")
+	await myToken.getSomeTokens(mySwap.address,1000000)
+	await mySwap.addLiquidity()
+	//await Evaluator.ex8_contractCanSwapVsEth()
+	//await Evaluator.ex9_contractCanSwapVsDummyToken()
+	//await Evaluator.ex10_contractCanProvideLiquidity()
+	//await Evaluator.ex11_contractCanWithdrawLiquidity()
 }
 
 
